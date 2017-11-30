@@ -80,5 +80,12 @@ Wikiextractor
 git clone https://github.com/attardi/wikiextractor
 ```
 
+
+
 # Prepare
 
+You will get the wikipedia data below
+
+```
+https://dumps.wikimedia.org/jawiki/latest/
+```
