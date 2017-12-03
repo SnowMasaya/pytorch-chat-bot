@@ -17,7 +17,7 @@ class TestTwitterGetUserTimelineModule(TestCase):
                       "count": 1}
             req = self.twitter_get_usr_timeline_module.twitter.get(
                 self.twitter_get_usr_timeline_module.url, params=params)
-            self.twitter_get_usr_timeline_module.twitter_method(req, dict_flag=False,
+            self.twitter_get_usr_timeline_module.twitter_method(req, dict_flag=True,
                                                      dict_value=v)
         # SQLite
         self.twitter_get_usr_timeline_module.conn.commit()
