@@ -69,8 +69,8 @@ class DataLoaderAttention(object):
                              target2index: list):
         X_p, y_p = [], []
         for source, target in zip(X_r, y_r):
-            X_p.append(prepare_sequence(source + ['</s>'], source2index).view(1, -1))
-            y_p.append(prepare_sequence(target + ['</s>'], target2index).view(1, -1))
+            X_p.append(prepare_sequence(['<s>'] + source + ['</s>'], source2index).view(1, -1))
+            y_p.append(prepare_sequence(['<s>'] + target + ['</s>'], target2index).view(1, -1))
 
         train_data = list(zip(X_p, y_p))
         return train_data
@@ -81,7 +81,7 @@ class DataLoaderAttention(object):
 
     def __normalize_string(self, string: str):
         string = self.__unicode_to_ascii(string.lower().strip())
-        string = re.sub(r'([,.!?])', r' \1 ', string)
+        string = re.sub(r'([,!?])', r' \1 ', string)
         # string = re.sub(r'[^a-zA-Z,.!?]+', r' ', string)
         string = re.sub(r'\s+', r' ', string).strip()
         return string
