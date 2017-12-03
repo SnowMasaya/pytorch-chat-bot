@@ -61,9 +61,9 @@ class SlackModel():
         self.qrnn = QRNNModel(QRNNLayer, NUM_LAYERS, KERNEL_SIZE, HIDDEN_SIZE,
                               EMBEDDING_SIZE, SOURCE_VOCAB_SIZE, TARGET_VOCAB_SIZE)
 
-        self.qrnn.encoder = torch.load(encoder_model_name)
-        self.qrnn.decoder = torch.load(decoder_model_name)
-        self.qrnn.proj_linear = torch.load(proj_linear_model_name)
+        self.qrnn.encoder = torch.load(encoder_model_name, map_location=lambda storage, loc: storage)
+        self.qrnn.decoder = torch.load(decoder_model_name, map_location=lambda storage, loc: storage)
+        self.qrnn.proj_linear = torch.load(proj_linear_model_name, map_location=lambda storage, loc: storage)
 
     def read_config(self):
         """
