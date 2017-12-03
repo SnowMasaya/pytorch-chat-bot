@@ -8,7 +8,9 @@ from torch.autograd import Variable
 
 class Encoder(nn.Module):
     def __init__(self, qrnn_layer, n_layers, kernel_size,
-                 hidden_size, embedding_size, source_vocab_size):
+                 hidden_size, embedding_size, source_vocab_size, use_attention,
+                 zoneout, training, dropout,
+                 ):
         super(Encoder, self).__init__()
         self.embedding = nn.Embedding(source_vocab_size, embedding_size)
         layers = []
@@ -17,7 +19,8 @@ class Encoder(nn.Module):
                 input_size = embedding_size
             else:
                 input_size = hidden_size
-            layers.append(qrnn_layer(input_size, hidden_size, kernel_size, False))
+            layers.append(qrnn_layer(input_size, hidden_size, kernel_size, use_attention,
+                                     zoneout, training, dropout))
         self.layers = nn.Sequential(*layers)
 
     def init_weight(self):
