@@ -80,6 +80,52 @@ Wikiextractor
 git clone https://github.com/attardi/wikiextractor
 ```
 
+Depending on case
+
+```
+touch /etc/apt/sources.list.d/nvidia-ml.list
+sudo echo 'deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1404/x86_64/ /' > /etc/apt/sources.list.d/nvidia-ml.list
+sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential python3-dev cmake git curl vim ca-certificates libnccl2=2.0.5-2+cuda8.0 libnccl-dev=2.0.5-2+cuda8.0 libjpeg-dev libpng12-dev && rm -rf /var/lib/apt/lists/*
+sudo apt-get update && sudo apt-get install -y libxtst6 && pip install matplotlib
+```
+
+```
+curl -o ~/miniconda.sh -O  https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+chmod +x ~/miniconda.sh
+mkdir conda
+sh ~/miniconda.sh -b -p conda/ && rm ~/miniconda.sh
+conda/bin/conda install numpy pyyaml mkl setuptools cmake cffi
+conda/bin/conda install -c soumith magma-cuda80
+```
+
+Pytorch Install
+
+```
+pip insatll pyyaml
+git clone --recursive https://github.com/pytorch/pytorch
+cd pytorch
+python setup.py insatll
+export PYTHON_VERSION=3.6
+conda/bin/conda create -y --name pytorch-py$PYTHON_VERSION python=$PYTHON_VERSION numpy pyyaml scipy ipython mkl
+conda/bin/conda clean -ya
+export PATH=/opt/conda/envs/pytorch-py$PYTHON_VERSION/bin:$PATH
+conda install --name pytorch-py$PYTHON_VERSION -c soumith magma-cuda80
+export PATH=`pwd`/pytorch-reinforcement-learning/conda/envs/pytorch-py3.6/bin/:$PATH
+conda install --name pytorch-py$PYTHON_VERSION -c soumith magma-cuda80
+TORCH_CUDA_ARCH_LIST="3.5 5.2 6.0 6.1+PTX" TORCH_NVCC_FLAGS="-Xfatbin -compress-all"
+CMAKE_PREFIX_PATH="$(dirname $(which conda))/../"
+pip install -v .
+git clone https://github.com/pytorch/vision.git && cd vision && pip install -v .
+conda install pytorch torchvision cuda80 -c soumith
+pip install git+https://github.com/pytorch/pytorch
+pip install torchvision
+```
+
+Active Pytorch
+
+```
+source ../conda/bin/activate pytorch-py3.6
+```
 
 
 # Prepare
