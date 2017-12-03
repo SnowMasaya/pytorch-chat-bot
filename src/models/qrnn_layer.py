@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import torch
 import torch.nn as nn
 import torch.nn.functional as FF
+from torch.autograd import Variable
 
 
 class QRNNLayer(nn.Module):
@@ -11,7 +12,8 @@ class QRNNLayer(nn.Module):
     Reference
         https://github.com/JayParks/quasi-rnn
     """
-    def __init__(self, input_size, hidden_size, kernel_size, use_attetion=False):
+    def __init__(self, input_size, hidden_size, kernel_size, use_attetion=False,
+                 zoneout=0.5, training=True, dropout=0.5):
         super(QRNNLayer, self).__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
@@ -23,6 +25,9 @@ class QRNNLayer(nn.Module):
 
         self.conv_linear = nn.Linear(hidden_size, 3 * hidden_size)
         self.rnn_linear = nn.Linear(2*hidden_size, hidden_size)
+        self.zoneout = zoneout
+        self.training = training
+        self.dropout = dropout
 
     def _conv_step(self, inputs, memory=None):
         inputs_ = inputs.transpose(1, 2)
@@ -63,6 +68,10 @@ class QRNNLayer(nn.Module):
             (conv_memory, attention_memory) = memory
 
         Z, F, O = self._conv_step(inputs, conv_memory)
+        if self.training:
+            mask = Variable(F.data.new(*F.size()).bernoulli_(1 - self.zoneout),
+                            requires_grad=False)
+            F = F * mask
 
         c_time, h_time = [], []
         # Reference
@@ -70,6 +79,11 @@ class QRNNLayer(nn.Module):
         #     http://pytorch.org/docs/master/torch.html?highlight=split#torch.split
         for time, (z, f, o) in enumerate(zip(Z.split(1, 1), F.split(1, 1), O.split(1, 1))):
             c, h = self._rnn_step(z, f, o, c, attention_memory)
+
+            if self.dropout != 0 and self.training:
+                c = torch.nn.functional.dropout(c, p=self.dropout,
+                                                training=self.training,
+                                                inplace=False)
             c_time.append(c)
             h_time.append(h)
 
