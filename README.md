@@ -1,5 +1,9 @@
 pytorch-chat-bot
 ==============================
+## Demo
+
+Depending on input, the output is displayed as the result like the image below.
+![result](https://github.com/SnowMasaya/pytorch-chat-bot/blob/master/img/pytorch-chat.mov.gif)
 
 A short description of the project.
 
@@ -64,14 +68,22 @@ export PYTHONPATH=$PYTHONPATH:`pwd`
 Prepare Mecab
 
 ```
-sudo apt-get install libmecab-dev
+sudo apt-get install libmecab-dev make
 sudo apt-get install mecab mecab-ipadic-utf8
 ```
 
 Prepare Mecab dict
 
 ```
-git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git
+$ git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git
+
+$ cd mecab-ipadic-neologd
+
+$ ./bin/install-mecab-ipadic-neologd -n
+
+$ echo `mecab-config --dicdir`"/mecab-ipadic-neologd"
+
+$ ./bin/install-mecab-ipadic-neologd -h
 ```
 
 Wikiextractor
@@ -86,28 +98,36 @@ Depending on case
 touch /etc/apt/sources.list.d/nvidia-ml.list
 sudo echo 'deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1404/x86_64/ /' > /etc/apt/sources.list.d/nvidia-ml.list
 sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential python3-dev cmake git curl vim ca-certificates libnccl2=2.0.5-2+cuda8.0 libnccl-dev=2.0.5-2+cuda8.0 libjpeg-dev libpng12-dev && rm -rf /var/lib/apt/lists/*
-sudo apt-get update && sudo apt-get install -y libxtst6 && pip install matplotlib
+sudo apt-get update && sudo apt-get install -y libxtst6 g++
+sudo -E add-apt-repository -y ppa:george-edison55/cmake-3.x
+sudo -E apt-get update
+sudo apt-get install cmake
+sudo apt-get update
+sudo apt-get upgrade
 ```
 
 ```
 curl -o ~/miniconda.sh -O  https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 chmod +x ~/miniconda.sh
-mkdir conda
 sh ~/miniconda.sh -b -p conda/ && rm ~/miniconda.sh
-conda/bin/conda install numpy pyyaml mkl setuptools cmake cffi
+conda/bin/conda install numpy pyyaml mkl setuptools cmake cffi matplotlib
+```
+GPU environiment
+
+```
 conda/bin/conda install -c soumith magma-cuda80
 ```
 
 Pytorch Install
 
 ```
-pip insatll pyyaml
 git clone --recursive https://github.com/pytorch/pytorch
 cd pytorch
-python setup.py insatll
 export PYTHON_VERSION=3.6
-conda/bin/conda create -y --name pytorch-py$PYTHON_VERSION python=$PYTHON_VERSION numpy pyyaml scipy ipython mkl
+conda/bin/conda create -y --name pytorch-py$PYTHON_VERSION python=$PYTHON_VERSION numpy pyyaml scipy ipython mkl pyymal
 conda/bin/conda clean -ya
+source ../conda/bin/activate pytorch-py3.6
+python setup.py insatll
 export PATH=/opt/conda/envs/pytorch-py$PYTHON_VERSION/bin:$PATH
 conda install --name pytorch-py$PYTHON_VERSION -c soumith magma-cuda80
 export PATH=`pwd`/pytorch-reinforcement-learning/conda/envs/pytorch-py3.6/bin/:$PATH
@@ -124,7 +144,6 @@ pip install torchvision
 Active Pytorch
 
 ```
-source ../conda/bin/activate pytorch-py3.6
 ```
 
 
