@@ -82,7 +82,7 @@ class Decoder(nn.Module):
         scores = torch.cat(decode, 1)
         return scores.view(inputs.size(0) * max_length, -1)
 
-    def decode(self, context, encoder_outputs, target2index):
+    def decode(self, context, encoder_outputs, target2index, index2target, max_lengh=50):
         start_decode = Variable(LongTensor([[target2index['<s>']] * 1])).transpose(0, 1)
         embedded = self.embedding(start_decode)
         hidden = self.init_hidden(start_decode)
@@ -90,13 +90,15 @@ class Decoder(nn.Module):
         decodes = []
         attentions = []
         decoded = embedded
-        while decoded.data.tolist()[0] != target2index['</s>']:
+
+        while decoded.data.tolist()[0] != target2index['</s>'] and max_lengh > len(attentions):
             _, hieedn = self.gru(torch.cat((embedded, context), 2), hidden)
             concated = torch.cat((hidden, context.transpose(0, 1)), 2)
             score = self.linear(concated.squeeze(0))
             softmaxed = F.log_softmax(score)
             decodes.append(softmaxed)
             decoded = softmaxed.max(1)[1]
+            # print(index2target[decoded.data.tolist()[0]])
             embedded = self.embedding(decoded).unsqueeze(1)
             context, alpha = self.Attention(hidden, encoder_outputs, None)
             attentions.append(alpha.squeeze(1))
