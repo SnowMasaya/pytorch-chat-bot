@@ -17,13 +17,13 @@ def main():
                         type=str, default='../data/processed/source_replay_twitter_data.txt',
                         dest="train_data", help="set the training data ")
     parser.add_argument("-e", "--embedding_size", metavar="embedding_size",
-                        type=int, default=300,
+                        type=int, default=50,
                         dest="embedding_size", help="set the embedding size ")
     parser.add_argument("-H", "--hidden_size", metavar="hidden_size",
                         type=int, default=512,
                         dest="hidden_size", help="set the hidden size ")
     parser.add_argument("-f", "--fine_tune_model_name", metavar="fine_tune_model_name",
-                        type=str, default='../models/glove_model_40.pth',
+                        type=str, default='../models/glove_wiki/glove_model_40.pth',
                         dest="fine_tune_model_name", help="set the fine tune model name ")
     args = parser.parse_args()
 
@@ -37,13 +37,15 @@ def main():
     encoder = Encoder(len(source2index), EMBEDDING_SIZE, HIDDEN_SIZE, 3, True)
     decoder = Decoder(len(target2index), EMBEDDING_SIZE, HIDDEN_SIZE * 2)
 
-    trainer = Trainer(epoch=300, batch_size=64,
+    trainer = Trainer(epoch=600, batch_size=64,
                       fine_tune_model=args.fine_tune_model_name
                       )
 
     trainer.train_attention(train_data=train_data,
                             source2index=source2index,
                             target2index=target2index,
+                            index2source=index2source,
+                            index2target=index2target,
                             encoder_model=encoder,
                             decoder_model=decoder)
 
