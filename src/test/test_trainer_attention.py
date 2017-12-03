@@ -30,6 +30,8 @@ class TestTrainerAttention(TestCase):
         self.trainer.train_attention(train_data=train_data,
                                      source2index=source2index,
                                      target2index=target2index,
+                                     index2source=index2source,
+                                     index2target=index2target,
                                      encoder_model=encoder,
                                      decoder_model=decoder,
                                      )
