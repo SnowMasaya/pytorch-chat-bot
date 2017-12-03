@@ -65,34 +65,7 @@ export PYTHONPATH=$PYTHONPATH:`pwd`
 
 # Install
 
-Prepare Mecab
-
-```
-sudo apt-get install libmecab-dev make
-sudo apt-get install mecab mecab-ipadic-utf8
-```
-
-Prepare Mecab dict
-
-```
-$ git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git
-
-$ cd mecab-ipadic-neologd
-
-$ ./bin/install-mecab-ipadic-neologd -n
-
-$ echo `mecab-config --dicdir`"/mecab-ipadic-neologd"
-
-$ ./bin/install-mecab-ipadic-neologd -h
-```
-
-Wikiextractor
-
-```
-git clone https://github.com/attardi/wikiextractor
-```
-
-Depending on case
+## Initial Setting
 
 ```
 touch /etc/apt/sources.list.d/nvidia-ml.list
@@ -106,19 +79,44 @@ sudo apt-get update
 sudo apt-get upgrade
 ```
 
+## Prepare Mecab
+
+```
+sudo apt-get install libmecab-dev make
+sudo apt-get install mecab mecab-ipadic-utf8
+```
+
+## Prepare Mecab-neologd dict
+
+```
+$ git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git
+
+$ cd mecab-ipadic-neologd
+
+$ ./bin/install-mecab-ipadic-neologd -n
+
+$ echo `mecab-config --dicdir`"/mecab-ipadic-neologd"
+
+$ ./bin/install-mecab-ipadic-neologd -h
+```
+
+
+## Conda install
+
 ```
 curl -o ~/miniconda.sh -O  https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 chmod +x ~/miniconda.sh
 sh ~/miniconda.sh -b -p conda/ && rm ~/miniconda.sh
 conda/bin/conda install numpy pyyaml mkl setuptools cmake cffi matplotlib
 ```
-GPU environiment
+
+## GPU environiment
 
 ```
 conda/bin/conda install -c soumith magma-cuda80
 ```
 
-Pytorch Install
+## PyTorch Install
 
 ```
 git clone --recursive https://github.com/pytorch/pytorch
@@ -141,16 +139,8 @@ pip install git+https://github.com/pytorch/pytorch
 pip install torchvision
 ```
 
-Active Pytorch
+## Active Conda Environiment
 
 ```
-```
-
-
-# Prepare
-
-You will get the wikipedia data below
-
-```
-https://dumps.wikimedia.org/jawiki/latest/
+source conda/bin/activate pytorch-py3.6
 ```
