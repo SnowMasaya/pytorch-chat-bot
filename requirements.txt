@@ -11,3 +11,9 @@ requests_oauthlib
 mecab-python3
 neologdn
 scikit-learn==0.19.1
+bottle==0.12.9
+future==0.15.2
+oauthlib==1.1.2
+python-twitter==3.1
+requests==2.10.0
+slackclient-1.1.0
