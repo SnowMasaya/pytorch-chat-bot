@@ -46,14 +46,14 @@ class ProducerConsumerThreadTwitterAsync(object):
         while True:
              try:
                  yield from twiteet_queue.put(self.twitter_get_user_timeline.twitter_txt_dict)
-                 yield from asyncio.sleep(60 + random.random() * 10)
+                 yield from asyncio.sleep(1 + random.random() * 1)
              except asyncio.QueueFull:
                  print("Queue Full")
                  pass
              else:
                  log_text = "Produced "
                  print(log_text)
-                 time.sleep(random.uniform(5, 8))
+                 time.sleep(random.uniform(1, 8))
 
     @asyncio.coroutine
     def consumer_run(self):
@@ -72,4 +72,4 @@ class ProducerConsumerThreadTwitterAsync(object):
             self.twitter_get_user_timeline.conn.commit()
             # self.twitter_get_user_timeline.conn.close()
             twiteet_queue.task_done()
-            yield from asyncio.sleep(60 + random.random() * 10)
+            yield from asyncio.sleep(1 + random.random() * 1)

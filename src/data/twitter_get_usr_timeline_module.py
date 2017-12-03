@@ -13,6 +13,8 @@ import json
 import sqlite3
 import re
 import os
+import random
+import time
 APP_PATH = os.path.dirname(__file__)
 
 
@@ -30,13 +32,13 @@ class TwitterGetUserTimelineModule():
                                          "consumer_secret",
                                          "token",
                                          "token_secret",
-                                         "user_name2"])
+                                         "user_name"])
         config_file = config_file
 
         with open(config_file, encoding="utf-8") as cf:
              e = yaml.load(cf)
              twitter = Twitter(e["twitter"]["consumer_key"], e["twitter"]["consumer_secret"],
-                               e["twitter"]["token"], e["twitter"]["token_secret"], e["twitter"]["user_name2"])
+                               e["twitter"]["token"], e["twitter"]["token_secret"], e["twitter"]["user_name"])
 
         CK = twitter.consumer_key         # Consumer Key
         CS = twitter.consumer_secret      # Consumer Secret
@@ -47,7 +49,8 @@ class TwitterGetUserTimelineModule():
         self.url = "https://api.twitter.com/1.1/statuses/user_timeline.json"
 
         # ツイート本文
-        self.screen_name = twitter.user_name2
+        self.screen_name = twitter.user_name
+        print(self.screen_name)
         self.params = {"screen_name": self.screen_name, "exclude_replies": False,
                        "count": 1000}
 
@@ -124,3 +127,20 @@ class TwitterGetUserTimelineModule():
                 source_txt = self.p.sub("", v)
                 replay_txt = self.p.sub("", tweet["text"])
                 self.__insert_sqlite(k, source_txt, replay_txt)
+
+
+if __name__ == '__main__':
+    twitter_get_user_timeline = TwitterGetUserTimelineModule()
+    req = twitter_get_user_timeline.twitter.get(twitter_get_user_timeline.url, params = twitter_get_user_timeline.params)
+    # Twitter
+    twitter_get_user_timeline.twitter_method(req)
+    while True:
+        for k,v in twitter_get_user_timeline.twitter_txt_dict.items():
+            params = {"screen_name": k, "exclude_replies": False, "count": 10000}
+            req = twitter_get_user_timeline.twitter.get(twitter_get_user_timeline.url, params = params)
+            twitter_get_user_timeline.twitter_method(req, dict_flag=False, dict_value=v)
+        # SQLite
+        twitter_get_user_timeline.conn.commit()
+        # twitter_get_user_timeline.conn.close()
+        print('Sleep time {}'.format(random.uniform(10, 80)))
+        time.sleep(random.uniform(10, 80))
