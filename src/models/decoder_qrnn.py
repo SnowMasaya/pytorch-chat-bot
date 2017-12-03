@@ -11,7 +11,9 @@ import torch
 
 class Decoder(nn.Module):
     def __init__(self, qrnn_layer, n_layers, kernel_size,
-                 hidden_size, embedding_size, target_vocab_size):
+                 hidden_size, embedding_size, target_vocab_size,
+                 zoneout, training, dropout,
+                 ):
         super(Decoder, self).__init__()
         self.embedding = nn.Embedding(target_vocab_size, embedding_size)
         layers = []
@@ -24,7 +26,8 @@ class Decoder(nn.Module):
                 use_attention = True
             else:
                 use_attention = False
-            layers.append(qrnn_layer(input_size, hidden_size, kernel_size, use_attention))
+            layers.append(qrnn_layer(input_size, hidden_size, kernel_size, use_attention,
+                                     zoneout, training, dropout))
         self.layers = nn.Sequential(*layers)
 
     def init_hidden(self, inputs):
